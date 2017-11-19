@@ -1,0 +1,96 @@
+// Pair
+// Original Code: http://nanomsg.org/gettingstarted/index.html
+//
+// Build https://docs.hunter.sh/en/latest/creating-new/create/cmake.html
+// cd <repo root>
+// export PATH="<path to polly/bin>:$PATH"
+// TOOLCHAIN=gcc PROJECT_DIR=examples/nanomsg ./jenkins.py
+// file ./_testing/_builds/gcc-Release/nanomsg-example
+//
+// Usage
+//  ./_testing/_builds/gcc-Release/nanomsg-example node0 ipc:///tmp/nanomsg-example.ipc
+//  ./_testing/_builds/gcc-Release/nanomsg-example node1 ipc:///tmp/nanomsg-example.ipc
+
+#include <chrono>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+#include <stdexcept>
+#include <string>
+#include <thread>
+
+#include <nanomsg/nn.h>
+#include <nanomsg/pair.h>
+
+#define NODE0 "node0"
+#define NODE1 "node1"
+#define DATE  "DATE"
+
+#define NODE0 "node0"
+#define NODE1 "node1"
+
+#define REQUIRE_OK(expr) if (!(expr)) throw std::runtime_error(std::string("error @ ") + std::to_string(__LINE__))
+
+int send_name(int sock, const char *name)
+{
+  printf ("%s: SENDING \"%s\"\n", name, name);
+  int sz_n = strlen (name) + 1; // '\0' too
+  return nn_send (sock, name, sz_n, 0);
+}
+
+int recv_name(int sock, const char *name)
+{
+  char *buf = NULL;
+  int result = nn_recv (sock, &buf, NN_MSG, 0);
+  if (result > 0)
+    {
+      printf ("%s: RECEIVED \"%s\"\n", name, buf);
+      nn_freemsg (buf);
+    }
+  return result;
+}
+
+int send_recv(int sock, const char *name)
+{
+  int to = 100;
+  REQUIRE_OK (nn_setsockopt (sock, NN_SOL_SOCKET, NN_RCVTIMEO, &to, sizeof (to)) >= 0);
+  while(1)
+    {
+      recv_name(sock, name);
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      send_name(sock, name);
+    }
+}
+
+int node0 (const char *url)
+{
+  int sock = nn_socket (AF_SP, NN_PAIR);
+  REQUIRE_OK (sock >= 0);
+  REQUIRE_OK (nn_bind (sock, url) >= 0);
+  send_recv(sock, NODE0);
+  return nn_shutdown (sock, 0);
+}
+
+int node1 (const char *url)
+{
+  int sock = nn_socket (AF_SP, NN_PAIR);
+  REQUIRE_OK (sock >= 0);
+  REQUIRE_OK (nn_connect (sock, url) >= 0);
+  send_recv(sock, NODE1);
+  std::this_thread::sleep_for(std::chrono::seconds(1)); // wait for messages to flush before shutting down
+  return nn_shutdown (sock, 0);
+}
+
+int main (const int argc, const char **argv)
+{
+  if (strncmp (NODE0, argv[1], strlen (NODE0)) == 0 && argc > 1)
+    return node0 (argv[2]);
+  else if (strncmp (NODE1, argv[1], strlen (NODE1)) == 0 && argc > 1)
+    return node1 (argv[2]);
+  else
+    {
+      fprintf (stderr, "Usage: pair %s|%s <URL> <ARG> ...\n",
+               NODE0, NODE1);
+      return 1;
+    }
+}
