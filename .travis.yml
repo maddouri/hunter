@@ -31,43 +31,29 @@ env:
 matrix:
   include:
     # Linux {
+    # CMAKE_CXX_STANDARD < 11
     #- os: linux
     #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=default
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=clang-libstdcxx
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=gcc-5
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=android-ndk-r15c-api-21-armeabi-v7a-neon-clang-libcxx
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=analyze
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=sanitize-address
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=sanitize-leak
-    #- os: linux
-    #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=sanitize-thread
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=cxx11
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=clang-libstdcxx
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=libcxx14
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=gcc-5
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=gcc-cxx14-c11
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=gcc-cxx17-c11
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=android-ndk-r15c-api-21-armeabi-v7a-neon-clang-libcxx
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=android-ndk-r16b-api-24-arm64-v8a-clang-libcxx14
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=analyze
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=android-ndk-r16b-api-24-armeabi-v7a-neon-clang-libcxx14
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=sanitize-address
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=emscripten-cxx11
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=sanitize-leak
     - os: linux
-      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=raspberrypi3-cxx11
+      env: PROJECT_DIR=examples/dynalo TOOLCHAIN=sanitize-thread
     # }
 
     # OSX {
+    # OSX is not supported yet
     #- os: osx
     #  env: PROJECT_DIR=examples/dynalo TOOLCHAIN=libcxx
     #- os: osx
