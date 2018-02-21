@@ -30,8 +30,9 @@ environment:
     - TOOLCHAIN: "mingw"
       PROJECT_DIR: examples\dynalo
 
-    - TOOLCHAIN: "msys"
-      PROJECT_DIR: examples\dynalo
+    # not supported by the lib yet
+    #- TOOLCHAIN: "msys"
+    #  PROJECT_DIR: examples\dynalo
 
 install:
   # Python 3
